@@ -1,0 +1,7 @@
+node_modules/
+app/jspm_packages/
+dist/
+.DS_Store
+.idea/
+app/modules/css/
+build/
