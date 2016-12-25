@@ -1,0 +1,105 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Photo Viewer</title>
+
+    <style>
+        body{
+            overflow: hidden;
+        }
+        .status-indicator {
+            font-size: 5vw;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .container {
+            padding: 0px;
+            margin: 0px;
+            width: 100%;
+        }
+
+        .slider {
+            min-height: 100%;
+        }
+        .hint{
+            font-size: 10px;
+            color: lavender;
+        }
+
+        #status {
+            display: none;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <div id="photoframe" class="carousel slide">
+    <div class="carousel-inner" role="listbox" id="listbox">
+
+    </div>
+    </div>
+
+    <div class="status-indicator">
+        <a href="#" id="start">
+            <span class="glyphicon glyphicon-expand"></span>
+        </a>
+        <span id="status">Loading...</span>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        let imageList = [];
+        let fullScreen = () => {
+            var el = document.documentElement,
+                rfs = el.requestFullscreen
+                    || el.webkitRequestFullScreen
+                    || el.mozRequestFullScreen
+                    || el.msRequestFullscreen
+                ;
+            rfs.call(el);
+        }
+
+        let statusToggle = () => {
+            $("#status").toggle();
+        }
+
+        let loadImages = () => {
+            statusToggle();
+            //Yet to implement the ajax call
+            $.getJSON("http://localhost:8983/solr/photoframe?q=", (data) => {
+                statusToggle();
+            }).fail(() => {
+                //This is is a stub. Will be replaced with actual service once Solr services are ready.
+                statusToggle();
+                imageList.push("http://wallpaperscraft.com/image/christmas_new_year_santa_claus_fir_tree_decorations_cookies_113025_602x339.jpg");
+                imageList.push("http://wallpaperscraft.com/image/seagull_bird_sea_flying_flapping_113014_602x339.jpg");
+                imageList.push("http://wallpaperscraft.com/image/waves_sea_foam_surf_113009_602x339.jpg")
+
+                imageList.forEach(imgURL =>{
+                    $(`<div class="item"><img src="${imgURL}'" width="100%" height="100%"></div>`).appendTo('.carousel-inner');
+                    $('.item').first().addClass('active');
+                    $("#photoframe").carousel();
+                });
+
+            });
+        }
+
+        $("#start").click(() => {
+            fullScreen();
+            $("#start").toggle();
+            loadImages();
+        });
+    });
+</script>
+</body>
+</html>
