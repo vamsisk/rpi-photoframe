@@ -19,6 +19,11 @@ module.exports = VisionInfo => (URL, callback) => {
             body.tags = tags.filter(tag => {
                 return tag.confidence >= 0.9;
             });
+
+            let categories = body.categories || [];
+            body.categories = categories.filter(category => {
+                return category.score >= 0.9;
+            })
         }
         callback(error, response, body);
     });
