@@ -24,7 +24,6 @@ module.exports = pipleLine => (URL) => {
     }
 
     Promise.all([exifPromise(), visionAPIPromise()]).then((data) => {
-        console.log(JSON.stringify(imageData));
         SolrClient(imageData);
     });
 }
