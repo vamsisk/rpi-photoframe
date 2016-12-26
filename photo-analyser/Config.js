@@ -4,6 +4,6 @@ module.exports = {
         key: "527ba5cd458e407bad738a8987a0a8f2"
     },
     solr: {
-        URL: "http://localhost:8983/solr/photoslider/update?commitWithin=1000&overwrite=true&wt=json",
+        URL: "http://52.15.136.66:8983/solr/photo-album/update?commitWithin=1000&overwrite=true&wt=json",
     }
 }
