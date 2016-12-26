@@ -3,18 +3,28 @@ let visionInfo = require('./VisionInfo.js')();
 
 module.exports = pipleLine => (URL) => {
     let imageData = {imageInfo: {}, visionInfo: {}, path: URL};
+    let exifPromise = () => {
+        return new Promise((resolve, reject) => {
+            exifInfo(URL, (exifData) => {
+                imageData.imageInfo = exifData;
+                resolve(imageData);
+            });
+        });
+    }
 
-    const processVisionInfo = (error, response, body) => {
-        imageData.visionInfo = body;
+    let visionAPIPromise = () => {
+        return new Promise((resolve, reject) => {
+            visionInfo(URL, (error, response, body) => {
+                imageData.visionInfo = body;
+                resolve(imageData);
+            });
+        });
+
+    }
+
+    Promise.all([exifPromise(), visionAPIPromise()]).then((data) => {
         console.log(imageData);
-    }
-    const processExifInfo = (exifData) => {
-        imageData.imageInfo = exifData;
-        visionInfo(URL, processVisionInfo);
-    }
-
-    exifInfo(URL, processExifInfo);
-
+    });
 }
 
 
