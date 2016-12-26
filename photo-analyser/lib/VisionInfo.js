@@ -13,5 +13,13 @@ module.exports = VisionInfo => (URL, callback) => {
             'url': URL
         }
     };
-    request(options, callback);
+    request(options, (error, response, body) => {
+        if (body) {
+            let tags = body.tags || [];
+            body.tags = tags.filter(tag => {
+                return tag.confidence >= 0.9;
+            });
+        }
+        callback(error, response, body);
+    });
 }
