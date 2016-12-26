@@ -1,6 +1,6 @@
 # rpi-photoframe
 
-**Below are the list of resources used for photo frame project and the regions they were created in.**
+**Below are the list of AWS resources used for photo frame project and the regions they were created in.**
 
 * SNS - NotifyMe - Region US East (N. Virginia) – us-east-1
 * SES - Region US East (N. Virginia) – us-east-1
