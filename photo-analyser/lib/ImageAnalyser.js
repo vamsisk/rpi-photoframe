@@ -1,5 +1,6 @@
 let exifInfo = require('./ExifInfo.js')();
 let visionInfo = require('./VisionInfo.js')();
+let SolrClient = require('./SolrClient.js')();
 
 module.exports = pipleLine => (URL) => {
     let imageData = {imageInfo: {}, visionInfo: {}, path: URL};
@@ -24,6 +25,7 @@ module.exports = pipleLine => (URL) => {
 
     Promise.all([exifPromise(), visionAPIPromise()]).then((data) => {
         console.log(imageData);
+        SolrClient(imageData);
     });
 }
 
