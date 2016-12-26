@@ -1,11 +1,12 @@
-module.exports = VisionInfo => (URL, callback) => {
-    var request = require('request');
+let request = require('request');
+let config = require('../Config').vision;
 
-    var options = {
-        url: 'https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Categories&language=en',
+module.exports = VisionInfo => (URL, callback) => {
+    let options = {
+        url: config.URL,
         headers: {
             'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': '527ba5cd458e407bad738a8987a0a8f2'
+            'Ocp-Apim-Subscription-Key': config.key
         },
         method: "POST",
         json: {
