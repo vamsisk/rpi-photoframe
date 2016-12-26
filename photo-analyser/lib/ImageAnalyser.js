@@ -1,28 +1,31 @@
+let exifInfo = require('./ExifInfo.js')();
+let visionInfo = require('./VisionInfo.js')();
+let SolrClient = require('./SolrClient.js')();
+
 module.exports = pipleLine => (URL) => {
-
-    let exifInfo = require('./ExifInfo.js')();
-    let visionInfo = require('./VisionInfo.js')();
-    let request = require("request");
-    let fs = require("fs");
-    let Stream = require('stream').Transform;
-    let imageData;
-
-    const processVisionInfo = (error, response, body) => {
-        if (imageData) {
-            imageData.visiondata = body;
-            console.log(imageData);
-        }else{
-            console.log(body);
-        }
-
-    }
-    const processExifInfo = (error, exifData) => {
-        imageData = exifData;
-        visionInfo(URL, processVisionInfo);
+    let imageData = {imageInfo: {}, visionInfo: {}, path: URL};
+    let exifPromise = () => {
+        return new Promise((resolve, reject) => {
+            exifInfo(URL, (exifData) => {
+                imageData.imageInfo = exifData;
+                resolve(imageData);
+            });
+        });
     }
 
-    request(URL, (error, response, body) => {
-        exifInfo(new Buffer(body), processExifInfo);
+    let visionAPIPromise = () => {
+        return new Promise((resolve, reject) => {
+            visionInfo(URL, (error, response, body) => {
+                imageData.visionInfo = body;
+                resolve(imageData);
+            });
+        });
+
+    }
+
+    Promise.all([exifPromise(), visionAPIPromise()]).then((data) => {
+        console.log(JSON.stringify(imageData));
+        SolrClient(imageData);
     });
 }
 

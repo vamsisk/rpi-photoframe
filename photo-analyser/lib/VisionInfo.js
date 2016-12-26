@@ -1,15 +1,30 @@
+let request = require('request');
+let config = require('../Config').vision;
+
 module.exports = VisionInfo => (URL, callback) => {
-    var request = require('request');
-    var options = {
-        url: 'https://api.projectoxford.ai/vision/v1.0/analyze?visualFeatures=Categories&language=en',
+    let options = {
+        url: config.URL,
         headers: {
             'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key':'527ba5cd458e407bad738a8987a0a8f2'
+            'Ocp-Apim-Subscription-Key': config.key
         },
-        data : {
-            'url' : URL
+        method: "POST",
+        json: {
+            'url': URL
         }
     };
+    request(options, (error, response, body) => {
+        if (body) {
+            let tags = body.tags || [];
+            body.tags = tags.filter(tag => {
+                return tag.confidence >= 0.9;
+            });
 
-    request(options,callback);
+            let categories = body.categories || [];
+            body.categories = categories.filter(category => {
+                return category.score >= 0.9;
+            })
+        }
+        callback(error, response, body);
+    });
 }
