@@ -1,0 +1,12 @@
+{
+  "name": "S3bucket-image-analyser",
+  "version": "0.0.1",
+  "description": "This project is used to get all the imamges from S3 bucket and analyse the images",
+  "scripts": {
+    "start": "node BatchProcess.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.7.19",
+    "request": "^2.79.0"
+  }
+}

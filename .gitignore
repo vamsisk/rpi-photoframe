@@ -1,2 +1,6 @@
 photo-analyser/npm-debug.log
 photo-analyser/node_modules
+photo-analyser/.idea
+S3bucket-image-analyser/node_modules
+S3bucket-image-analyser/.idea
+photoviewer/.idea

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Analyse the image information like EXIF, tags and etc.",
   "main": "index.js",
+
   "dependencies": {
     "exif": "^0.6.0",
     "exif-parser": "^0.1.9",
