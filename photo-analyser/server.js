@@ -4,6 +4,7 @@ const config = require('./Config.js');
 
 const app = express();
 app.config = config;
+app.use(express.static("static"));
 app.post('/analyse', (req, res) => {
     const URL = req.headers['url'];
     let message = "url not found in header";
