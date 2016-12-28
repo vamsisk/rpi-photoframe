@@ -8,25 +8,35 @@ module.exports = ExifInfo => (URL, callback) => {
                 if (exifData) {
                     imageInfo = exifData;
                 } else {
-                    var parser = require('exif-parser').create(pathOrData);
-                    let info = parser.parse();
-                    imageInfo.image = {};
-                    imageInfo.image.XResolution = info.imageSize.width;
-                    imageInfo.image.YResolution = info.imageSize.height;
+                   try {
+                       var parser = require('exif-parser').create(pathOrData);
+                       let info = parser.parse();
+                       imageInfo.image = {};
+                       imageInfo.image.XResolution = info.imageSize.width;
+                       imageInfo.image.YResolution = info.imageSize.height;
+                   }catch (error){
+                       console.log(`${URL} - ${error}`);
+                       imageInfo = null;
+                   }
                 }
                 callback(imageInfo);
             });
         } catch (error) {
-
+            console.log(`${URL} - ${error}`);
         }
     }
 
-    if (URL.toLowerCase().indexOf("http") == 0) {
-        request(URL, {encoding: 'binary'}, (error, response, body) => {
-            processExif(new Buffer(body, "binary"));
-        });
-    } else {
-        processExif(URL);
+    try {
+
+        if (URL.toLowerCase().indexOf("http") == 0) {
+            request(URL, {encoding: 'binary'}, (error, response, body) => {
+                processExif(new Buffer(body, "binary"));
+            });
+        } else {
+            processExif(URL);
+        }
+    }catch (error){
+        console.log(`${URL} - ${error}`);
     }
 
 }
