@@ -24,6 +24,13 @@ module.exports = VisionInfo => (URL, callback) => {
             body.categories = categories.filter(category => {
                 return category.score >= 0.9;
             })
+
+            body.description =  body.description ||[];
+            let captions = body.description.captions || [];
+            body.description.captions = captions.filter(caption => {
+                return caption.confidence >= 0.9;
+            })
+
         }
         callback(error, response, body);
     });
