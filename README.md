@@ -24,7 +24,7 @@ http://hostname:port/index.html
 By default server runs on port 9000.
 
 
-##API to index the image into into Solr##
+##API to index the image into Solr##
 * URL - http://hostname:port/analyse
 <p>By default server runs on port 9000.</p>
 * Header:
