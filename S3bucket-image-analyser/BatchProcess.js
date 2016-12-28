@@ -25,11 +25,10 @@ s3.listObjects(bucketParams, (err, data) => {
                 method: "POST"
             };
             request(options, (error, response, body) => {
-                let message = body;
                 if (error) {
-                    message = error;
+                    console.log(error);
                 }
-                console.log(message);
+
             });
         }
     });
