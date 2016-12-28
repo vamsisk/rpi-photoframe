@@ -22,10 +22,13 @@ module.exports = pipleLine => (URL) => {
         });
 
     }
-
     Promise.all([exifPromise(), visionAPIPromise()]).then((data) => {
-        SolrClient(imageData);
-    });
+        console.log(JSON.stringify(imageData))
+        if (imageData.imageInfo || !imageData.visionInfo.code) {
+            SolrClient(imageData);
+        }
+
+    })
 }
 
 
