@@ -81,7 +81,7 @@ function scaleDownContentAndSave(base64FileAttachment) {
 
     console.log('Attachment size: ', attachmentSize);
 
-    if(attachmentSize > 30000) {
+    if(attachmentSize > 4194304) {
         console.log('Attachment size is greater than 4 MB. So scaling down.');
         jimp.read(bitmapFileContent, function(err, image) {
             console.log('Scaling down image ');
