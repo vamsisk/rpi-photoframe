@@ -4,6 +4,7 @@
   "description": "",
   "main": "handle-email-receive-event.js",
   "dependencies": {
+    "jimp": "^0.2.27",
     "mailparser": "^0.6.1",
     "path": "^0.12.7"
   },
