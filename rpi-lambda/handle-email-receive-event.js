@@ -7,6 +7,7 @@ var MailParser = require("mailparser").MailParser;
 
 var fs = require("fs");
 var path = require('path');
+var jimp = require('jimp');
 
 exports.handler = (event, context, callback) => {
     const messageId = event.Records[0].ses.mail.messageId;
@@ -42,26 +43,76 @@ function processEmail(messageId) {
         console.log('Email subject: ', mail.subject);
         console.log('Number of attachments: ', mail.attachments.length);
         mail.attachments.forEach(function(attachment) {
-            console.log(attachment.fileName);
-            var bitmapFileContent = new Buffer(attachment.content, 'base64');
-            var file = attachment.fileName;
-            var ext = path.extname(file);
-            var generatedFileName = path.basename(file, ext) + '_' + new Date().getTime() + ext;
-            var params = {
-                Bucket: 'digital-photoframe-lib',
-                Key: 'uploads/'+generatedFileName,
-                Body: bitmapFileContent,
-                ContentDisposition: 'filename="'+generatedFileName+'"',
-                StorageClass: 'STANDARD',
-                ACL: 'public-read'
-            };
-            var s3 = new aws.S3({signatureVersion: 'v4'});
-            s3.putObject(params, function(err, putResponseData) {
-              if (err) console.log(err, err.stack); // an error occurred
-              else     console.log(putResponseData);           // successful response
-            });
+            console.log('Processing file: ',attachment.fileName);
+            scaleDownContentAndSave(attachment);
         });
     });
 
+}
+
+function getEnhancedFileName(fileName) {
+    var ext = path.extname(fileName);
+    return path.basename(fileName, ext) + '_' + new Date().getTime() + ext;
+
+}
+
+function saveContent(attachment, bitmapFileContent) {
+    var generatedFileName = getEnhancedFileName(attachment.fileName);
+    console.log('Saving content with generated file name : ', generatedFileName);
+    var params = {
+        Bucket: 'digital-photoframe-lib',
+        Key: 'uploads/'+generatedFileName,
+        Body: bitmapFileContent,
+        ContentDisposition: 'filename="'+generatedFileName+'"',
+        StorageClass: 'STANDARD',
+        ACL: 'public-read'
+    };
+    var s3 = new aws.S3({signatureVersion: 'v4'});
+    s3.putObject(params, function(err, putResponseData) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(putResponseData);           // successful response
+    });
+}
+
+function scaleDownContentAndSave(base64FileAttachment) {
+
+    var bitmapFileContent = new Buffer(base64FileAttachment.content, 'base64');
+    let attachmentSize = base64FileAttachment.length;
+
+    console.log('Attachment size: ', attachmentSize);
+
+    if(attachmentSize > 30000) {
+        console.log('Attachment size is greater than 4 MB. So scaling down.');
+        jimp.read(bitmapFileContent, function(err, image) {
+            console.log('Scaling down image ');
+
+            let isPotrait = (image.bitmap.width < image.bitmap.height)? true : false;
+            let desiredWidth;
+            let desiredHeight;
+            if(isPotrait) {
+                desiredWidth = 720;
+                desiredHeight = 1280;
+            } else {
+                desiredWidth = 1280;
+                desiredHeight = 720;
+            }
+
+            image.resize(desiredWidth, desiredHeight, function(err, image) {
+                console.log('processing scale down image by retrieving the bitmap buffer');
+                var tempfilepath = '/tmp/' + getEnhancedFileName(base64FileAttachment.fileName);
+                console.log('Saving file temporarily at ', tempfilepath);
+                image.write(tempfilepath, function(result) {
+                    console.log('Saving result buffer after scaling down the iamge.');
+                    fs.readFile(tempfilepath , function(err, data) {
+                        saveContent(base64FileAttachment, data);
+                    });
+                });
+            });
+        });
+            
+    } else {
+        console.log('Saving non - scaled version of image into S3');
+        save(base64FileAttachment, bitmapFileContent);
+    }
 }
 
