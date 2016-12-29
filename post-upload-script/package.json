@@ -1,0 +1,9 @@
+{
+    "name": "post_upload-script",
+    "version": "1.0.0",
+    "description": "Connect with photo analyser to index the uploaded image",
+    "main": "post-image-upload.js",
+    "dependencies": {
+        "request": "^2.79.0"
+    }
+}

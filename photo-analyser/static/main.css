@@ -1,0 +1,32 @@
+body {
+    overflow: hidden;
+}
+
+.status-indicator {
+    font-size: 5vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.container {
+    padding: 0px;
+    padding-left: 5px;
+    margin: 0px;
+    width: 100%;
+    background-color: darkgray;
+}
+
+.slider {
+    min-height: 100%;
+}
+
+.hint {
+    font-size: 10px;
+    color: lavender;
+}
+
+#status {
+    display: none;
+}
