@@ -117,7 +117,7 @@ function scaleDownContentAndSave(base64FileAttachment) {
             
     } else {
         console.log('Saving non - scaled version of image into S3');
-        save(base64FileAttachment, bitmapFileContent);
+        saveContent(base64FileAttachment, bitmapFileContent);
     }
 }
 
